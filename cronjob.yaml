@@ -27,7 +27,7 @@ spec:
               apk add openssh
               apk add python-dev
               pip install kafka-tools
-              bin/kafka-topics.sh --describe ${KAFKA_ZOOKEEPER_CONNECT}
+              bin/kafka-topics.sh --describe --zookeeper ${KAFKA_ZOOKEEPER_CONNECT}
               kafka-assigner -z ${KAFKA_ZOOKEEPER_CONNECT} -e balance --types count size
-              kafka-assigner.py -z ${KAFKA_ZOOKEEPER_CONNECT} -e reorder
+              kafka-assigner -z ${KAFKA_ZOOKEEPER_CONNECT} -e reorder
           restartPolicy: OnFailure
