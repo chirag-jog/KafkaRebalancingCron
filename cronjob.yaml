@@ -1,0 +1,33 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kafka-rebalancing
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: rebalancing
+            image: wurstmeister/kafka
+            env:
+            - name: KAFKA_ZOOKEEPER_CONNECT
+              value: zoo1:2181
+            command:
+            - sh
+            - -exc
+            - |
+              cd /opt/kafka
+              bin/kafka-topics.sh --list --zookeeper ${KAFKA_ZOOKEEPER_CONNECT}
+              apk add python2
+              apk add py-pip
+              pip install setuptools
+              apk add build-base
+              apk add openssh
+              apk add python-dev
+              pip install kafka-tools
+              bin/kafka-topics.sh --describe ${KAFKA_ZOOKEEPER_CONNECT}
+              kafka-assigner -z ${KAFKA_ZOOKEEPER_CONNECT} -e balance --types count size
+              kafka-assigner.py -z ${KAFKA_ZOOKEEPER_CONNECT} -e reorder
+          restartPolicy: OnFailure

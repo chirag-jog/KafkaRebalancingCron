@@ -1,0 +1,28 @@
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: kafka-broker2
+spec:
+  template:
+    metadata:
+      labels:
+        app: kafka
+        id: "2"
+    spec:
+      containers:
+      - name: kafka
+        image: wurstmeister/kafka
+        ports:
+        - containerPort: 9094
+        env:
+        - name: KAFKA_ADVERTISED_PORT
+          value: "30718"
+        - name: KAFKA_ADVERTISED_HOST_NAME
+          value: 34.66.228.117
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          value: zoo1:2181
+        - name: KAFKA_BROKER_ID
+          value: "2"
+        - name: KAFKA_CREATE_TOPICS
+          value: topic2-test:1:1
